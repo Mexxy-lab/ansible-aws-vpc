@@ -102,3 +102,49 @@
       resource_tags:
         Name: "vprofile-IGW"    
     register: igw_out
+
+  - name: Set up public subnet Route Table 
+    amazon.aws.ec2_vpc_route_table:
+      vpc_id: "{{ vpcout.vpc.id }}"
+      region: "{{ region }}"
+      state: present
+      resource_tags:
+        Name: "vprofile-pubsubRT"
+      subnets:
+        - "{{ pubsub1_out.subnet.id }}"
+        - "{{ pubsub2_out.subnet.id }}"
+        - "{{ pubsub3_out.subnet_id }}"
+      routes:
+        - dest: 0.0.0.0/0
+          gateway_id: "{{ igw_out.gateway_id }}"
+        - dest: ::/0
+          gateway_id: "{{ igw_out.gateway_id }}"
+    register: pubRT_out
+
+  - name: Create new nat gateway and allocate new EIP if a nat gateway does not yet exist in the subnet.
+    amazon.aws.ec2_vpc_nat_gateway:
+      vpc_id: "{{ vpcout.vpc.id }}"
+      region: "{{ region }}"
+      state: present
+      wait: true
+      if_exist_do_not_create: true
+      subnet_id: "{{ pubsub1_out.subnet.id }}"      # Nat gateway is always kept in the Public subnet. It leaves in the public subnet 
+    register: Natgw_out
+
+  - name: Set up private subnet Route Table 
+    amazon.aws.ec2_vpc_route_table:
+      vpc_id: "{{ vpcout.vpc.id }}"
+      region: "{{ region }}"
+      state: present
+      resource_tags:
+        Name: "vprofile-privRT"
+      subnets:
+        - "{{ privsub1_out.subnet.id }}"
+        - "{{ privsub2_out.subnet.id }}"
+        - "{{ privsub3_out.subnet_id }}"
+      routes:
+        - dest: 0.0.0.0/0
+          gateway_id: "{{ Natgw_out.nat_gateway_id }}"
+        - dest: ::/0
+          gateway_id: "{{ igw_out.gateway_id }}"
+    register: privRT_out    
