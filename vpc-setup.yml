@@ -5,7 +5,7 @@
   - name: Import Vpc Variables
     include_vars: vars/vpc_setup
 
-  - name: create a VPC with dedicated tenancy and a couple of tags
+  - name: Create a VPC with dedicated tenancy and a couple of tags
     amazon.aws.ec2_vpc_net:
       name: "{{vpc_name}}"
       cidr_block: "{{vpcCidr}}"
@@ -18,3 +18,81 @@
         this: works      
       state: "{{state}}"
     register: vpcout
+
+  # - debug:
+  #     var: vpcout  
+
+  - name: Create a Public subnet 1 in zone1
+    amazon.aws.ec2_vpc_subnet:
+      state: "{{ state }}"
+      vpc_id: "{{ vpcout.vpc.id }}"
+      cidr: "{{ PubSub1Cidr }}"
+      region: "{{ region }}"
+      az: "{{ zone1 }}"
+      map_public: true
+      resource_tags:
+        Name: "vprofile-pubsubnet1"
+    register: pubsub1_out
+
+  # - debug:
+  #     var: pubsub1_out
+
+  - name: Create a Public subnet 2 in zone2
+    amazon.aws.ec2_vpc_subnet:
+      state: "{{ state }}"
+      vpc_id: "{{ vpcout.vpc.id }}"
+      cidr: "{{ PubSub2Cidr }}"
+      region: "{{ region }}"
+      az: "{{ zone2 }}"
+      map_public: true
+      resource_tags:
+        Name: "vprofile-pubsubnet2"
+    register: pubsub2_out
+
+  - name: Create a Public subnet 3 in zone3
+    amazon.aws.ec2_vpc_subnet:
+      state: "{{ state }}"
+      vpc_id: "{{ vpcout.vpc.id }}"
+      cidr: "{{ PubSub3Cidr }}"
+      region: "{{ region }}"
+      az: "{{ zone3 }}"
+      map_public: true
+      resource_tags:
+        Name: "vprofile-pubsubnet3"
+    register: pubsub3_out
+
+  - name: Create a Private subnet 1 in zone1
+    amazon.aws.ec2_vpc_subnet:
+      state: "{{ state }}"
+      vpc_id: "{{ vpcout.vpc.id }}"
+      cidr: "{{ PrivSub1Cidr }}"
+      region: "{{ region }}"
+      az: "{{ zone1 }}"
+      map_public: true
+      resource_tags:
+        Name: "vprofile-privsubnet1"
+    register: privsub1_out
+
+  - name: Create a Private subnet 2 in zone2
+    amazon.aws.ec2_vpc_subnet:
+      state: "{{ state }}"
+      vpc_id: "{{ vpcout.vpc.id }}"
+      cidr: "{{ PrivSub2Cidr }}"
+      region: "{{ region }}"
+      az: "{{ zone2 }}"
+      map_public: true
+      resource_tags:
+        Name: "vprofile-privsubnet2"
+    register: privsub2_out
+
+  - name: Create a Private subnet 3 in zone3
+    amazon.aws.ec2_vpc_subnet:
+      state: "{{ state }}"
+      vpc_id: "{{ vpcout.vpc.id }}"
+      cidr: "{{ PrivSub3Cidr }}"
+      region: "{{ region }}"
+      az: "{{ zone3 }}"
+      map_public: true
+      resource_tags:
+        Name: "vprofile-privsubnet3"
+    register: privsub3_out        
