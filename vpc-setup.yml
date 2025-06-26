@@ -34,9 +34,6 @@
         Name: "vprofile-pubsubnet1"
     register: pubsub1_out
 
-  # - debug:
-  #     var: pubsub1_out
-
   - name: Create a Public subnet 2 in zone2
     amazon.aws.ec2_vpc_subnet:
       state: "{{ state }}"
@@ -95,4 +92,13 @@
       map_public: true
       resource_tags:
         Name: "vprofile-privsubnet3"
-    register: privsub3_out        
+    register: privsub3_out
+
+  - name: Internet gateway setup
+    amazon.aws.ec2_vpc_igw:
+      vpc_id: "{{ vpcout.vpc.id }}"
+      region: "{{ region }}"
+      state: present
+      resource_tags:
+        Name: "vprofile-IGW"    
+    register: igw_out

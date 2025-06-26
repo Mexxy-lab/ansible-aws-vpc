@@ -14,4 +14,5 @@
 
 ```bash
 ansible-playbook nameOfplaybook.yml
+ansible-playbook vpc-setup.yml
 ```
