@@ -6,6 +6,11 @@
 
 - There is a Bastion host in one of the Public subnet with its own security group.
 
+## Project Prequisites 
+
+- Install Ansible
+- Install boto3 on your VM on Cloud EC2 instance 
+
 ## Infrastructure Architecture
 
 ![alt text](image.png)
@@ -15,4 +20,5 @@
 ```bash
 ansible-playbook nameOfplaybook.yml
 ansible-playbook vpc-setup.yml
+ansible-playbook bastion-instance.yml
 ```
