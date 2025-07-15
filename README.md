@@ -14,6 +14,8 @@
 ## Infrastructure Architecture
 
 ![alt text](pictures/image.png)
+![alt text](image.png)
+![alt text](image.png)
 
 ## To provision the infrastructure use below ansible playbook command 
 
