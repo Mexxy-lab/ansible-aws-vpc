@@ -1,0 +1,7 @@
+bastion-key.pem
+vars/*
+*.pem
+*.key
+*.yml
+*.txt
+*.log

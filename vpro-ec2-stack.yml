@@ -11,7 +11,7 @@
       include_vars: vars/vprostacksetup
 
     - name: Create vprofile ec2 key
-      ec2_key:
+      amazon.aws.ec2_key:
         name: vprokey
         region: "{{region}}"
       register: vprokey_out
@@ -24,7 +24,7 @@
       when: vprokey_out.changed
 
     - name: Create Securiry Group for Load Balancer
-      ec2_group:
+      amazon.aws.ec2_security_group:
         name: vproELB-sg
         description: Allow port 80 from everywhere and all port within sg
         region: "{{region}}"
@@ -37,7 +37,7 @@
       register: vproELBSG_out
 
     - name: Create Securiry Group for Vprofile Stack
-      ec2_group:
+      amazon.aws.ec2_security_group:
         name: vproStack-sg
         description: Allow port 22 from everywhere and all port within sg
         region: "{{region}}"
@@ -56,7 +56,7 @@
       register: vproStackSG_out
 
     - name: Update Securiry Group with its own sg id
-      ec2_group:
+      amazon.aws.ec2_security_group:
         name: vproStack-sg
         description: Allow port 22 from everywhere and all port within sg
         region: "{{region}}"
@@ -67,7 +67,7 @@
             group_id: "{{vproStackSG_out.group_id}}"
 
     - name: Creating Nginx web01
-      ec2:
+      amazon.aws.ec2_instance:
         key_name: vprokey
         region: "{{region}}"
         instance_type: t2.micro
@@ -88,7 +88,7 @@
       register: web01_out
 
     - name: Creating tomcat app01
-      ec2:
+      amazon.aws.ec2_instance:
         key_name: vprokey
         region: "{{region}}"
         instance_type: t2.micro
@@ -109,7 +109,7 @@
       register: app01_out
 
     - name: Creating memcache mc01
-      ec2:
+      amazon.aws.ec2_instance:
         key_name: vprokey
         region: "{{region}}"
         instance_type: t2.micro
@@ -130,7 +130,7 @@
       register: mc01_out
 
     - name: Creating RabbitMQ rmq01
-      ec2:
+      amazon.aws.ec2_instance:
         key_name: vprokey
         region: "{{region}}"
         instance_type: t2.micro
@@ -151,7 +151,7 @@
       register: rmq01_out
 
     - name: Creating Mysql db01
-      ec2:
+      amazon.aws.ec2_instance:
         key_name: vprokey
         region: "{{region}}"
         instance_type: t2.micro
